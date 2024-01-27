@@ -1,5 +1,10 @@
 -----------------------------------------------
 -- ヤマハルータ向け、ゲーム制作モジュール
+--
+-- ヤマハルータで動作するゲーム関連をまとめたモジュール
+-- こんなスーパーニッチなソースコードを見てくれて、ありがとう。
+--
+-- 参考 : http://www.rtpro.yamaha.co.jp/RT/docs/lua/rt_api.html
 -----------------------------------------------
 
 -- 異常終了した事を通知して、プログラムを強制終了します。
@@ -88,4 +93,36 @@ function getPlayerName()
     f:close()
 
     return playerName
+end
+
+-- ヤマハRTXで改行ごとに音を鳴らします
+-- 引数 : 楽譜データ(多重配列)
+function playYamahaPiano( score )
+
+    -- 定数
+    local TONE_INDEX = 1
+    local WAIT_INDEX = 2
+
+    -- ヤマハルータかどうか検知する。
+    local firm = _RT_FIRM_REVISION
+
+    -- PCで実行されている場合
+    if firm == nil then
+        return --類似する処理は難しいのでスキップ
+    else
+    -- Yamahaルータで実行されている場合
+        bz, err = rt.hw.open("buzzer1")
+
+        -- 音色を流す
+        -- RTXでは次の音色だけ出せる B2、E3、B3、B4
+        if (bz) then
+            for i = 1, #score do
+                bz:tone(score[i][TONE_INDEX])
+                rt.sleep(score[i][WAIT_INDEX])
+            end
+
+            bz:off()
+            bz:close()
+        end 
+    end
 end
