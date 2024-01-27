@@ -45,34 +45,22 @@ Configを見直せ…ヤマハルータの中に秘められた鍵を見つけ�
     print("----------------------------")
 end
 
-local function registerPlayerName()
-    local username = arg[1]
+local function invalidArgs()
+   
+    local message = [[
+        まだ鍵を見つけてない、もしくは間違っているようだ。
 
-    print(username, " さんですね、こんにちは！")
-    wait(1)
-    print("これから ", username, " さんには 同僚のネットワークエンジニアが殺された原因を調べてもらいます")
-    print("では…")
-    wait(1)
-    startStory(username)
-
-    ------------
-    -- ストーリー表示後の処理
-    ------------
-    writeConfig( [[description 100 "RUN < lua 02_game.lua 34076 >"]] )
-    setPlayerName(username)
+        次に進めないのなら、再度メッセージを読んだらどうだ。
+        lua 01_init_game.lua <あなたの名前>
+    ]]
 end
 
 function main()
-    if #arg < 1 then
-        requirInputName()
+    if ( #arg == 1) and ( arg[1] == "34076") then
+
         return
     else
-        local success, errorMessage = pcall(registerPlayerName)
-
-        if not success then
-            print("!!! プレイヤーによって ゲームが中断されました !!!")
-            print("!!! ゲームを続行するには、再度処理を実施してください !!!")
-        end
+        invalidArgs()
     end
 end
 

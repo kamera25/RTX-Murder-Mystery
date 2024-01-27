@@ -48,6 +48,10 @@ function writeConfig( str )
     -- PCで実行されている場合
     if firm == nil then
         local f = io.open('conf.txt', 'w')
+        if f == nil then
+            exception()
+        end
+
         f:write(str)
         f:close()
     else
@@ -58,4 +62,30 @@ function writeConfig( str )
         end
     end
 
+end
+
+-- Playerの名前を設定します
+function setPlayerName( playerName )
+
+    local f = io.open('gameSetting.txt', 'w')
+    if f == nil then
+        exception()
+    end
+
+    f:write(playerName)
+    f:close()
+end
+
+-- Playerの名前を取得します
+function getPlayerName()
+
+    local f = io.open('gameSetting.txt', 'r')
+    if f == nil then
+        exception()
+    end
+
+    local playerName = f:read('a')
+    f:close()
+
+    return playerName
 end
