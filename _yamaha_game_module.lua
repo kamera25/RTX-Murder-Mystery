@@ -19,7 +19,7 @@ local function exception()
 end
 
 -- 指定秒数待機します
--- 引数 : 秒(seconds)
+-- 引数 : 秒(seconds/Integer)
 function Wait(seconds)
 
     if IsRunYamahaRTX() then
@@ -29,6 +29,19 @@ function Wait(seconds)
         -- PCで実行されている場合
         local start = os.time()
         repeat until os.time() > start + seconds      
+    end
+end
+
+-- 指定ミリ秒数待機します
+-- 引数 : ミリ秒(seconds/float)
+function MiliWait(miliseconds)
+
+    local RTX1210_MILIWAIT = 2000000
+    local loopMax = RTX1210_MILIWAIT * miliseconds / 1000
+
+    if IsRunYamahaRTX() then
+        for i = 1, loopMax do
+        end
     end
 end
 
@@ -119,7 +132,7 @@ function PlayYamahaPiano( score )
                         bz:tone(score[i][TONE_INDEX])
                     end
 
-                    rt.sleep(score[i][WAIT_INDEX])
+                    MiliWait(score[i][WAIT_INDEX])
                 end
     
                 bz:off()
