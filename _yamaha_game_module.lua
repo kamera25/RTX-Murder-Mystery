@@ -49,7 +49,7 @@ function WriteConfig( str )
     if IsRunYamahaRTX() then
         -- Yamahaルータで実行されている場合
         rtn, cmd = rt.command(str)
-        if (not rtn) or (not cmd) then
+        if not rtn then
             exception()
         end
     else
@@ -68,10 +68,10 @@ end
 -- Playerの名前を設定します
 function SetPlayerName( playerName )
 
-    local f = openFile('gameSetting.txt', 'w')
+    local f = OpenFile('gameSetting.txt', 'w')
 
     if f == nil then
-        --exception()
+        exception()
     end
 
     f:write(playerName)
@@ -81,13 +81,13 @@ end
 -- Playerの名前を取得します
 function GetPlayerName()
 
-    local f = openFile('gameSetting.txt', 'r')
+    local f = OpenFile('gameSetting.txt', 'r')
 
     if f == nil then
-       --exception()
+       exception()
     end
 
-    local playerName = f:read('a')
+    local playerName = f:read('*a')
     f:close()
 
     return playerName

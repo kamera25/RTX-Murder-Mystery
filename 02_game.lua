@@ -11,14 +11,14 @@ end
 
 local function validArgs()
    
-    local playerName = getPlayerName()
+    local playerName = GetPlayerName()
     local message1 = [[
-        よく見抜いてくれたね。なんかいだっただろう。素晴らしい。
-        このメッセージを見つけたということは 私のメッセージを見つけたということだな。
+よく見抜いてくれたね。なんかいだっただろう。素晴らしい。
+このメッセージを見つけたということは 私のメッセージを見つけたということだな。
 
-        敵を欺くには 味方から。が基本だ。
-        すまない、これも犯人に悟られないようにするためだ。
-    ]]
+敵を欺くには 味方から。が基本だ。
+すまない、これも犯人に悟られないようにするためだ。
+]]
     local score = {
         {"B3", 1},
         {"B3", 1},
@@ -32,19 +32,21 @@ local function validArgs()
         {"B4", 2},
     }
     local message2 = [[
-        ？…何か聞こえてきたな。
-        まぁ、もう君には鍵を伝えたから良い。
-        次の鍵がわかったら、以下で入力してくれ。
-    
-        lua 03_game.lua <鍵>
-    ]]
+？…何か聞こえてきたな。
+まぁ、もう君には鍵を伝えたから良い。
+次の鍵がわかったら、以下で入力してくれ。
+
+> lua 03_game.lua <鍵>
+]]
 
     print("----------------------------")
 
-    print(playerName, "へ")
-    printWithWaitTime(message1, 1)
-    playYamahaPiano(score)
-    printWithWaitTime(message2, 1)
+    print(playerName .. " へ")
+    PrintWithWaitTime(message1, 1)
+    PlayYamahaPiano(score)
+    print(" ")
+    print(" ")
+    PrintWithWaitTime(message2, 1)
 
     print("----------------------------")
 end
@@ -52,13 +54,13 @@ end
 local function invalidArgs()
    
     local message = [[
-        まだ鍵を見つけてない もしくは間違っているようだ。
+まだ鍵を見つけてない もしくは間違っているようだ。
 
-        次に進めないのなら さっきのダイニングメッセージを読んだらどうだ。
-        lua 01_init_game.lua <あなたの名前>
+次に進めないのなら さっきのダイニングメッセージを読んだらどうだ。
+> lua 01_init_game.lua <あなたの名前>
     ]]
 
-    printWithWaitTime(message, 1)
+    PrintWithWaitTime(message, 1)
 end 
 
 local function main()
