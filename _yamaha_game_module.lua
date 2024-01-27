@@ -19,39 +19,41 @@ end
 
 -- 指定秒数待機します
 -- 引数 : 秒(seconds)
-function wait(seconds)
-    -- ヤマハルータかどうか検知する。
-    local firm = _RT_FIRM_REVISION
+function Wait(seconds)
 
-    -- PCで実行されている場合
-    if firm == nil then
-        local start = os.time()
-        repeat until os.time() > start + seconds        
+    if IsRunYamahaRTX() then
+        -- Yamahaルータで実行されている場合
+        rt.sleep(seconds)  
     else
-    -- Yamahaルータで実行されている場合
-        rt.sleep(seconds)
+        -- PCで実行されている場合
+        local start = os.time()
+        repeat until os.time() > start + seconds      
     end
 end
 
 -- テキストを指定秒数だけ遅らせます。
 -- 引数 : str 表示される「改行を含んだ文字列」 
 -- 引数 : waitSeconds 「表示を遅らせる秒数」
-function printWithWaitTime( str, waitSeconds)
+function PrintWithWaitTime( str, waitSeconds)
 
     for line in str:gmatch("(.-)\n") do
         print(line)
-        wait(waitSeconds)
+        Wait(waitSeconds)
     end
 end
 
 -- Configに書き込みを行います
 -- PCで実行されている場合、同じファイル配下のテキストに書き込みます
-function writeConfig( str )
-    -- ヤマハルータかどうか検知する。
-    local firm = _RT_FIRM_REVISION
+function WriteConfig( str )
 
-    -- PCで実行されている場合
-    if firm == nil then
+    if IsRunYamahaRTX() then
+        -- Yamahaルータで実行されている場合
+        rtn, cmd = rt.command(str)
+        if (not rtn) or (not cmd) then
+            exception()
+        end
+    else
+        -- PCで実行されている場合
         local f = io.open('conf.txt', 'w')
         if f == nil then
             exception()
@@ -59,22 +61,17 @@ function writeConfig( str )
 
         f:write(str)
         f:close()
-    else
-    -- Yamahaルータで実行されている場合
-        rtn, str = rt.command(cmd)
-        if (not rtn) or (not str) then
-          exception()
-        end
     end
 
 end
 
 -- Playerの名前を設定します
-function setPlayerName( playerName )
+function SetPlayerName( playerName )
 
-    local f = io.open('gameSetting.txt', 'w')
+    local f = openFile('gameSetting.txt', 'w')
+
     if f == nil then
-        exception()
+        --exception()
     end
 
     f:write(playerName)
@@ -82,11 +79,12 @@ function setPlayerName( playerName )
 end
 
 -- Playerの名前を取得します
-function getPlayerName()
+function GetPlayerName()
 
-    local f = io.open('gameSetting.txt', 'r')
+    local f = openFile('gameSetting.txt', 'r')
+
     if f == nil then
-        exception()
+       --exception()
     end
 
     local playerName = f:read('a')
@@ -97,32 +95,50 @@ end
 
 -- ヤマハRTXで改行ごとに音を鳴らします
 -- 引数 : 楽譜データ(多重配列)
-function playYamahaPiano( score )
+function PlayYamahaPiano( score )
 
     -- 定数
     local TONE_INDEX = 1
     local WAIT_INDEX = 2
 
-    -- ヤマハルータかどうか検知する。
-    local firm = _RT_FIRM_REVISION
+    if IsRunYamahaRTX() then
+            -- Yamahaルータで実行されている場合
+            bz, err = rt.hw.open("buzzer1")
 
-    -- PCで実行されている場合
-    if firm == nil then
-        return --類似する処理は難しいのでスキップ
+            -- 音色を流す
+            -- RTXでは次の音色だけ出せる B2、E3、B3、B4
+            if (bz) then
+                for i = 1, #score do
+                    bz:tone(score[i][TONE_INDEX])
+                    rt.sleep(score[i][WAIT_INDEX])
+                end
+    
+                bz:off()
+                bz:close()
+            end 
     else
-    -- Yamahaルータで実行されている場合
-        bz, err = rt.hw.open("buzzer1")
-
-        -- 音色を流す
-        -- RTXでは次の音色だけ出せる B2、E3、B3、B4
-        if (bz) then
-            for i = 1, #score do
-                bz:tone(score[i][TONE_INDEX])
-                rt.sleep(score[i][WAIT_INDEX])
-            end
-
-            bz:off()
-            bz:close()
-        end 
+        -- PCで実行されている場合
+        return --類似する処理は難しいのでスキップ
     end
+end
+
+-- 実行環境に応じて、Openにするファイルを変更します
+-- 引数 : filename : ファイル名
+-- 引数 : mode : 動作モード
+function OpenFile( filename, mode )
+
+    local path = filename
+
+    if IsRunYamahaRTX() then
+        -- Yamahaルータで実行されている場合、usb1(USBメモリ)にアクセスする
+         path = "usb1:/" .. filename
+    end
+
+    return io.open(path, mode) 
+end
+
+
+-- 実行環境がヤマハルータかどうかを判定します
+function IsRunYamahaRTX() 
+    return _RT_FIRM_REVISION ~= nil
 end

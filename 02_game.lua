@@ -1,4 +1,11 @@
-dofile("_yamaha_game_module.lua")
+local firm = _RT_FIRM_REVISION
+if firm == nil then
+    -- PCで実行されている場合
+    dofile("_yamaha_game_module.lua")
+else
+    --Yamahaルータで実行されている場合
+    dofile("usb1:/_yamaha_game_module.lua")
+end
 
 
 
@@ -52,7 +59,7 @@ local function invalidArgs()
     ]]
 
     printWithWaitTime(message, 1)
-end
+end 
 
 local function main()
     if ( #arg == 1) and ( arg[1] == "34076") then

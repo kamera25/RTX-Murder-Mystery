@@ -1,7 +1,14 @@
-dofile("_yamaha_game_module.lua")
+local firm = _RT_FIRM_REVISION
+if firm == nil then
+    -- PCで実行されている場合
+    dofile("_yamaha_game_module.lua")
+else
+    --Yamahaルータで実行されている場合
+    dofile("usb1:/_yamaha_game_module.lua")
+end
 
 
-local function requirInputName()
+local function requireInputName()
     print [[
         --------------------------------------------------
         【ヤマハルータからの挑戦！ルーティングの背後に隠された殺意】
@@ -64,15 +71,16 @@ end
 
 function main()
     if #arg < 1 then
-        requirInputName()
+        requireInputName()
         return
     else
-        local success, errorMessage = pcall(registerPlayerName)
+        registerPlayerName()
+        --[[local success, errorMessage = pcall(registerPlayerName)
 
         if not success then
             print("!!! プレイヤーによって ゲームが中断されました !!!")
             print("!!! ゲームを続行するには、再度処理を実施してください !!!")
-        end
+        end]]
     end
 end
 
