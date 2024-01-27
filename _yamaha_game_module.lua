@@ -1,6 +1,18 @@
+-----------------------------------------------
+-- ヤマハルータ向け、ゲーム制作モジュール
+-----------------------------------------------
 
+-- 異常終了した事を通知して、プログラムを強制終了します。
+local function exception()
+    local message = [[
+        想定されていない問題が発生しました。ゲームを中断します
+        ※再度、同じプログラムを実行してください。
+    ]]
+    print (message)
+    os.exit(1)
+end
 
--- wait - 指定秒数待機します
+-- 指定秒数待機します
 -- 引数 : 秒(seconds)
 function wait(seconds)
     -- ヤマハルータかどうか検知する。
@@ -25,4 +37,25 @@ function printWithWaitTime( str, waitSeconds)
         print(line)
         wait(waitSeconds)
     end
+end
+
+-- Configに書き込みを行います
+-- PCで実行されている場合、同じファイル配下のテキストに書き込みます
+function writeConfig( str )
+    -- ヤマハルータかどうか検知する。
+    local firm = _RT_FIRM_REVISION
+
+    -- PCで実行されている場合
+    if firm == nil then
+        local f = io.open('conf.txt', 'w')
+        f:write(str)
+        f:close()
+    else
+    -- Yamahaルータで実行されている場合
+        rtn, str = rt.command(cmd)
+        if (not rtn) or (not str) then
+          exception()
+        end
+    end
+
 end
