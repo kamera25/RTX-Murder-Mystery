@@ -10,9 +10,10 @@
 -- 異常終了した事を通知して、プログラムを強制終了します。
 local function exception()
     local message = [[
-        想定されていない問題が発生しました。ゲームを中断します
-        ※再度、同じプログラムを実行してください。
-    ]]
+想定されていない問題が発生しました。ゲームを中断します
+※再度、同じプログラムを実行してください。
+
+]]
     print (message)
     os.exit(1)
 end
@@ -106,11 +107,55 @@ function PlayYamahaPiano( score )
             bz, err = rt.hw.open("buzzer1")
 
             -- 音色を流す
-            -- RTXでは次の音色だけ出せる B2、E3、B3、B4
+            -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
             if (bz) then
                 for i = 1, #score do
-                    bz:tone(score[i][TONE_INDEX])
+
+                    -- 無音の場合
+                    if score[i][TONE_INDEX] == "NO" then
+                        bz:off()
+                    else
+                    -- 音色を流す場合
+                        bz:tone(score[i][TONE_INDEX])
+                    end
+
                     rt.sleep(score[i][WAIT_INDEX])
+                end
+    
+                bz:off()
+                bz:close()
+            end 
+    else
+        -- PCで実行されている場合
+        return --類似する処理は難しいのでスキップ
+    end
+end
+
+-- ヤマハRTXでLEDを光らせます
+-- 引数 : LED情報(多重配列)
+function ControlLED( ledData )
+
+    -- 定数
+    local LED_ONOFF_INDEX = 1
+    local WAIT_INDEX = 2
+
+    if IsRunYamahaRTX() then
+            -- Yamahaルータで実行されている場合
+            bz, err = rt.hw.open("status-led1")
+
+            -- 音色を流す
+            -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
+            if (bz) then
+                for i = 1, #ledData do
+
+                    -- 無音の場合
+                    if ledData[i][LED_ONOFF_INDEX] == "ON" then
+                        bz:on()
+                    else
+                        bz:off()
+                    end
+
+                    rt.sleep(ledData[i][WAIT_INDEX])
                 end
     
                 bz:off()

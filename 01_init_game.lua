@@ -20,7 +20,8 @@ local function requireInputName()
 はじめに、あなたの名前を入力してください。
 
 コマンド入力「lua 01_init_game.lua <あなたの名前>」
-        ]]
+
+]]
 
     print(message1)
     Wait(1)
@@ -46,6 +47,7 @@ Configを見直せ…ヤマハルータの中に秘められた鍵を見つけ�
 急げ…残された時間はもうわずかだ…
 
 三島より
+
 ]]
 
     print("----------------------------")
@@ -82,12 +84,12 @@ function main()
         return
     else
         registerPlayerName()
-        --[[local success, errorMessage = pcall(registerPlayerName)
+        local success, errorMessage = pcall(registerPlayerName)
 
         if not success then
             print("!!! プレイヤーによって ゲームが中断されました !!!")
             print("!!! ゲームを続行するには、再度処理を実施してください !!!")
-        end]]
+        end
     end
 end
 

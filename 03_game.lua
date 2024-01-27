@@ -13,38 +13,43 @@ local function validArgs()
    
     local playerName = GetPlayerName()
     local message1 = [[
-よく見抜いてくれたね。なんかいだっただろう。素晴らしい。
-このメッセージを見つけたということは 私のメッセージを見つけたということだな。
-
-敵を欺くには 味方から。これが基本だ。
-すまない これも犯人に悟られないようにするためだ。
+君は耳も良いのだな。聞き分けられるのは素晴らしい。
+前を向いて 歩けるのはすばらしいな。
+    
 ]]
-    local score = {
-        {"B3", 1},
-        {"B3", 1},
-        {"E3", 2},
-        {"B3", 1},
-        {"B3", 1},
-        {"E3", 2},
-        {"NO", 1},
-        {"B3", 1},
-        {"B3", 1},
-        {"E3", 1},
-        {"B4", 2},
+    local ledData = {
+        {"ON",  2}, -- N
+        {"OFF", 1},
+        {"ON",  1},
+
+        {"OFF", 3},
+
+        {"ON",  1}, -- E
+
+        {"OFF", 3},
+
+        {"ON",  2}, -- T
     }
     local message2 = [[
-？…何か悲しげな レクイレム が聞こえてきたな。
-まぁ もう君には鍵を伝えたから良い。
-次の鍵がわかったら 以下で入力してくれ。
 
-> lua 03_game.lua <鍵>
+…鍵はわかったかい？前を向いてみるんだよ。
+ヒントをあげよう。
+
+「・ー」　 最初の文字を示す
+「ーー・・」 最後の文字を示す
+「ーーーーー」　何も無い意味を示す
+
+インターネットをつかってもよいぞ。
+…これは 昔 ではあるがな。
+
+> lua 04_game.lua <鍵>
 ]]
 
     print("----------------------------")
 
     print(playerName .. " へ")
     PrintWithWaitTime(message1, 1)
-    PlayYamahaPiano(score)
+    ControlLED(ledData)
     print(" ")
     print(" ")
     PrintWithWaitTime(message2, 1)
@@ -57,8 +62,8 @@ local function invalidArgs()
     local message = [[
 まだ鍵を見つけてない もしくは間違っているようだ。
 
-次に進めないのなら さっきのダイニングメッセージを読んだらどうだ。
-> lua usb1:/01_init_game.lua <あなたの名前>
+次に進めないのなら さっきの ダイニングメッセージ と レクイレム を聞いたらどうだ。
+> lua usb1:/02_init_game.lua <あなたの名前>
 
 ]]
 
@@ -66,7 +71,7 @@ local function invalidArgs()
 end 
 
 local function main()
-    if ( #arg == 1) and ( arg[1] == "34076") then
+    if ( #arg == 1) and ( arg[1] == "4") then
         local success, errorMessage = pcall(validArgs)
 
         if not success then
