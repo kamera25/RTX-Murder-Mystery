@@ -7,10 +7,33 @@ else
     dofile("usb1:/_yamaha_game_module.lua")
 end
 
+-- ダミーのマルウェアファイルを生成する
+local function makeMalware()
+
+    local f = OpenFile("malware.bin", "w")
+    if f == nil then
+        print("すまない、トラブルが発生した。再度コマンドを実行してくれ")
+        os.exit(1)
+    end
+
+    f:write("Hello! I am malware!")
+    f:close()
+end
 
 
 local function validArgs()
    
+    ------------
+    -- ストーリーに関する処理
+    ------------
+    OutputSyslog( "Critical", "マルウェアが検知されました。削除できないため、手動で削除をお願いします。USBに入っています。")
+    OutputSyslog( "Info", "削除ができたら、コマンド「lua 05_ending.lua」を実行せよ。「lua usb1:/05_ending.lua」ではない、繰り返すが「usb1:/」は不要だ！")
+    CopyFileUSBtoFlash( "usb1:/_yamaha_game_module.lua" )
+    CopyFileUSBtoFlash( "usb1:/05_ending.lua" )
+    makeMalware()
+
+    -- ここまで --
+
     local playerName = GetPlayerName()
     local message1 = [[
 素晴らしい。

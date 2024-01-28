@@ -253,6 +253,36 @@ function OpenFile(filename, mode)
     return io.open(path, mode)
 end
 
+-- 実行環境に応じて、Openにするファイルを変更します
+-- 引数 : filename : ファイル名
+function OutputSyslog( severity, str)
+
+    if IsRunYamahaRTX() then
+        -- Yamahaルータで実行されている場合、普通にシスログに書く
+        rt.syslog(severity, str)
+    else
+        -- PCで実行されている場合
+        local f = io.open('syslog.log', 'w')
+        if f == nil then
+            exception()
+        end
+
+        f:write( severity, str)
+        f:close()
+    end
+
+end
+
+-- ファイルをUSBからFlashのルートにコピーする
+function CopyFileUSBtoFlash( path )
+    
+    if IsRunYamahaRTX() then
+        -- Yamahaルータで実行されている場合、フラッシュにコピーする
+        local command = "copy " .. path .. " /"
+        rt.command(command)
+    end
+end
+
 -- 実行環境がヤマハルータかどうかを判定します
 function IsRunYamahaRTX()
     return _RT_FIRM_REVISION ~= nil
