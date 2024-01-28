@@ -168,8 +168,8 @@ function PlayYamahaPiano(seconds)
     if kbd == nil then
         -- TODO : あとで直す
         local message = [[
-準備をしてないじゃないか
-また 悪いことをしようかな
+ジュンビ ヲ シテクダサイ
+ワタシ ハ カレ ニ ハナムケ シタイノデス
 
             ]]
         exceptionMsg(message)
@@ -251,6 +251,22 @@ function OpenFile(filename, mode)
     end
 
     return io.open(path, mode)
+end
+
+-- ファイルが存在するか確認します。(boolean)
+-- 引数 : filename : ファイル名
+function IsExistFile(filename)
+    local path = filename
+
+    local isExist = false
+    local f = io.open(path, "r")
+
+    if f then
+        isExist = true
+        f:close()  -- ファイルを閉じる
+    end
+
+    return isExist
 end
 
 -- 実行環境に応じて、Openにするファイルを変更します
