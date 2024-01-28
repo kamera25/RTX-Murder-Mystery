@@ -154,35 +154,41 @@ function PlayYamahaPiano(seconds)
     local WAIT_INDEX = 2
     local RTX1210_MILIWAIT = 2000000
 
-    local loopMax = seconds * RTX1210_MILIWAIT
+    local loopMax = seconds * 1000 * RTX1210_MILIWAIT 
 
     -- PCで実行されている場合
     if not IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
 
+    print(_RT_LUA_VERSION)
     -- 以下、Yamahaルータで実行されている場合の処理
-    bz, err = rt.hw.open("buzzer1")
-    kbd, err = rt.hw.open("keyboard1", "jp")
+    bz, errbz = rt.hw.open("buzzer1")
+    kbd, errkbb = rt.hw.open("keyboard1", "jp")
+    print(bz)
+    print(kbd)
+
+    if bz == nil then
+        -- TODO : あとで直す
+        local message = [[
+すまない、こちらがトラブルになった。
+再度コマンドを試してくれ
+
+            ]]
+        exceptionMsg(message)
+        print(errbz)
+    end
 
     -- 以下、ハードウェアが取得できなかったときの処理
-    if not kbd then
+    if kbd == nil then
         -- TODO : あとで直す
         local message = [[
-            君というやつは 僕への 花向け へも拒むんだね
-            また 悪いことをしようかな
+準備をしてないじゃないか
+また 悪いことをしようかな
 
             ]]
         exceptionMsg(message)
-    end
-    if not bz then
-        -- TODO : あとで直す
-        local message = [[
-            肝心の キーボード が差されてないじゃないか
-            また 悪いことをしようかな
-
-            ]]
-        exceptionMsg(message)
+        print(errkbb)
     end
 
     --
@@ -190,13 +196,13 @@ function PlayYamahaPiano(seconds)
         -- キーボードの入力情報を取得する(現在のキー入力を取得する)
         local keyInput = kbd:getc(false)
 
-        if keyInput == "B2" then        -- 低いシ
+        if keyInput == "4" then        -- 低いシ
             bz:tone("B2")
-        elseif keyInput == "E3" then    -- ミ
+        elseif keyInput == "5" then    -- ミ
             bz:tone("E3")
-        elseif keyInput == "B3" then    -- シ
+        elseif keyInput == "6" then    -- シ
             bz:tone("B3")
-        elseif keyInput == "B4" then    -- 更に高いシ
+        elseif keyInput == "+" then    -- 更に高いシ
             bz:tone("B4")
         else                            --判定外の
             bz:off()
