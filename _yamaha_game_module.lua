@@ -66,7 +66,7 @@ end
 function WriteConfig(str)
     if IsRunYamahaRTX() then
         -- Yamahaルータで実行されている場合
-        rtn, cmd = rt.command(str)
+        local rtn, cmd = rt.command(str)
         if not rtn then
             exception()
         end
@@ -123,7 +123,7 @@ function PlayScoreByBuzzer(score)
 
 
     -- Yamahaルータで実行されている場合
-    bz, err = rt.hw.open("buzzer1")
+    local bz, err = rt.hw.open("buzzer1")
 
     -- 音色を流す
     -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
@@ -152,32 +152,17 @@ function PlayYamahaPiano(seconds)
     -- 定数
     local TONE_INDEX = 1
     local WAIT_INDEX = 2
-    local RTX1210_MILIWAIT = 2000000
 
-    local loopMax = seconds * 1000 * RTX1210_MILIWAIT 
+    local loopMax = seconds * 2
 
     -- PCで実行されている場合
     if not IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
 
-    print(_RT_LUA_VERSION)
     -- 以下、Yamahaルータで実行されている場合の処理
-    bz, errbz = rt.hw.open("buzzer1")
-    kbd, errkbb = rt.hw.open("keyboard1", "jp")
-    print(bz)
+    local kbd, errkbb = rt.hw.open("keyboard1", "jp")
     print(kbd)
-
-    if bz == nil then
-        -- TODO : あとで直す
-        local message = [[
-すまない、こちらがトラブルになった。
-再度コマンドを試してくれ
-
-            ]]
-        exceptionMsg(message)
-        print(errbz)
-    end
 
     -- 以下、ハードウェアが取得できなかったときの処理
     if kbd == nil then
@@ -191,26 +176,32 @@ function PlayYamahaPiano(seconds)
         print(errkbb)
     end
 
+    local score = {
+    }
     --
     for i = 1, loopMax do
         -- キーボードの入力情報を取得する(現在のキー入力を取得する)
         local keyInput = kbd:getc(false)
 
+        local newRow
         if keyInput == "4" then        -- 低いシ
-            bz:tone("B2")
+            newRow = { "B2", 500}
         elseif keyInput == "5" then    -- ミ
-            bz:tone("E3")
+            newRow = { "E3", 500}
         elseif keyInput == "6" then    -- シ
-            bz:tone("B3")
+            newRow = { "B3", 500}
         elseif keyInput == "+" then    -- 更に高いシ
-            bz:tone("B4")
+            newRow = { "B4", 500}
         else                            --判定外の
-            bz:off()
+            newRow = { "NO", 500}
         end
+
+        table.insert( score, newRow)
      end
 
     kbd:close()
-    bz:close()
+
+    return score
 end
 
 -- ヤマハRTXでLEDを光らせます
@@ -227,7 +218,7 @@ function ControlLED(ledData)
 
 
     -- Yamahaルータで実行されている場合
-    bz, err = rt.hw.open("status-led1")
+    local bz, err = rt.hw.open("status-led1")
 
     -- 音色を流す
     -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
