@@ -16,7 +16,18 @@ local function makeMalware()
         os.exit(1)
     end
 
-    f:write("Hello! I am malware!")
+    local malstr = [[
+Hello! I am malware!
+
+8p7zf44dibpeecf45e9xc34k295gigdrktk25jbjwnbi5ratamxg2ai6u2miuy4demsh9z85569y39yc3amjuf59c9c748e7bf9
+sk5eb9tamyaymhepkg4sntgczhnbc6xfkwjyyf5k6sgh4uk897unszysjawx9rdc6r9mnfu4z5e4ru7m49xhhztezbubekwp89f
+awiiwkzsx5e4kjk97uwh78spsiygxgdmwjd2aaammji34hcubicxierc5bak8r39k658ncdbtmi4rfhz2zyrwj2zahkst6ggpnh
+ciei9e2gfyiy8uupmr8xy5m8z6jrh9si3wzcfg2uueuzjmk6n3yxkm4etzyt3j6iakt45fdkbwkjfswng66i66jt32muh2k9ub2
+7mwxfyj4ak6kcj48khyazzwwt32partsexrtckbdb7s5yma2he3ekex8idb88ejk5u2sbkj2t8xzuyk4mi94g79zxt5spchgkf6
+
+]]
+
+    f:write(malstr)
     f:close()
 end
 
