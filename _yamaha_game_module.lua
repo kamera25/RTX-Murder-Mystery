@@ -117,7 +117,7 @@ function PlayScoreByBuzzer(score)
     local WAIT_INDEX = 2
 
     -- PCで実行されている場合
-    if ! IsRunYamahaRTX() then
+    if not IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
 
@@ -157,7 +157,7 @@ function PlayYamahaPiano(seconds)
     local loopMax = seconds * RTX1210_MILIWAIT
 
     -- PCで実行されている場合
-    if ! IsRunYamahaRTX() then
+    if not IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
 
@@ -166,7 +166,7 @@ function PlayYamahaPiano(seconds)
     kbd, err = rt.hw.open("keyboard1", "jp")
 
     -- 以下、ハードウェアが取得できなかったときの処理
-    if ! kbd then
+    if not kbd then
         -- TODO : あとで直す
         local message = [[
             君というやつは 僕への 花向け へも拒むんだね
@@ -175,7 +175,7 @@ function PlayYamahaPiano(seconds)
             ]]
         exceptionMsg(message)
     end
-    if (bz) then
+    if not bz then
         -- TODO : あとで直す
         local message = [[
             肝心の キーボード が差されてないじゃないか
@@ -190,22 +190,18 @@ function PlayYamahaPiano(seconds)
         -- キーボードの入力情報を取得する(現在のキー入力を取得する)
         local keyInput = kbd:getc(false)
 
-        -- 鳴らす音を決める
-        if ! keyInput then
+        if keyInput == "B2" then        -- 低いシ
+            bz:tone("B2")
+        elseif keyInput == "E3" then    -- ミ
+            bz:tone("E3")
+        elseif keyInput == "B3" then    -- シ
+            bz:tone("B3")
+        elseif keyInput == "B4" then    -- 更に高いシ
+            bz:tone("B4")
+        else                            --判定外の
             bz:off()
-            if keyInput == "B2" then        -- 低いシ
-                bz:tone("B2")
-            elseif keyInput == "E3" then    -- ミ
-                bz:tone("E3")
-            elseif keyInput == "B3" then    -- シ
-                bz:tone("B3")
-            elseif keyInput == "B4" then    -- 更に高いシ
-                bz:tone("B4")
-            else                            --判定外の
-                bz:off()
-            end
         end
-    end
+     end
 
     kbd:close()
     bz:close()
@@ -219,7 +215,7 @@ function ControlLED(ledData)
     local WAIT_INDEX = 2
 
     -- PCで実行されている場合
-    if ! IsRunYamahaRTX() then
+    if not IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
 
