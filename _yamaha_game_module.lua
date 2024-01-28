@@ -262,7 +262,7 @@ function OutputSyslog( severity, str)
         rt.syslog(severity, str)
     else
         -- PCで実行されている場合
-        local f = io.open('syslog.log', 'w')
+        local f = io.open('syslog.log', 'a')
         if f == nil then
             exception()
         end
@@ -273,7 +273,8 @@ function OutputSyslog( severity, str)
 
 end
 
--- ファイルをUSBからFlashのルートにコピーする
+-- ファイルをUSBメモリからFlashのルートにコピーする
+-- 引数 : path : ファイル名(on USBメモリ)
 function CopyFileUSBtoFlash( path )
     
     if IsRunYamahaRTX() then

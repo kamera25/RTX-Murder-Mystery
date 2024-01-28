@@ -3,7 +3,6 @@ dofile("_yamaha_game_module.lua") -- 最後だけは、ヤマハのFlashに書�
 
 local function validArgs()
    
-    --local playerName = GetPlayerName()
 
     local message1 = [[
 おれ おレ… オレ は
@@ -73,6 +72,7 @@ local function invalidArgs()
 > lua usb1:/04_game.lua <さっき入力したモールス信号>
 
 録音開始(無音)
+
 ]]
 
     PrintWithWaitTime(message1, 1)
