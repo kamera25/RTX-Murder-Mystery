@@ -37,9 +37,9 @@ local function validArgs()
     ------------
     -- ストーリーに関する処理
     ------------
-    OutputSyslog( "notice", "Malware has been detected. Please remove it manually as it cannot be removed, it is in Flash.")
+    OutputSyslog( "info", "Malware has been detected. Remove it manually, it is in Flash.")
     OutputSyslog( "info", "After deletion, execute the command > lua 05_ending.lua")
-    OutputSyslog( "info", "Not 「lua usb1:/05_ending.lua」! I repeat, 「usb1:/」 is not necessary!")
+    OutputSyslog( "info", "Not <lua usb1:/05_ending.lua>! I repeat, <usb1:/> is not necessary!")
     CopyFileUSBtoFlash( "usb1:/_yamaha_game_module.lua" )
     CopyFileUSBtoFlash( "usb1:/05_ending.lua" )
     makeMalware()
