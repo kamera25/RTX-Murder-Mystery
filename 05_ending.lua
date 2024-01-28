@@ -22,7 +22,7 @@ local message2 = [[
     
 サイゴニ アナタ ノ キーボードデ
 カレ ヘノ レクイレム ヲ 演奏 シテアゲテクダサイ…
-10秒間
+エンソウ ハ 10 ビョウデス
 
 3
 2
@@ -66,9 +66,9 @@ local function invalidArgs()
    
     -- local playerName = GetPlayerName()
     local message1 = [[
-まだ完全にミッションをクリアしていないようだ。
-もしわからなければ ミシマ の 犯行メッセージ を聞くしかないな
+それどころではない、先にマルウェアを見つけ出さなければ。
 
+もしわからなければ ミシマ の 犯行メッセージ をもう一回聞くしかないな
 > lua usb1:/04_game.lua <さっき入力したモールス信号>
 
 録音開始(無音)
@@ -81,7 +81,8 @@ local function invalidArgs()
 end 
 
 local function main()
-    if ( #arg == 1) and ( arg[1] == "NET") then
+
+    if not IsExistFile("malware.bin") and IsExistFile("05_ending.lua") then
         local success, errorMessage = pcall(validArgs)
 
         if not success then
