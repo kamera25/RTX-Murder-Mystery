@@ -111,39 +111,78 @@ end
 
 -- ヤマハRTXで改行ごとに音を鳴らします
 -- 引数 : 楽譜データ(多重配列)
+function PlayScoreByBuzzer( score )
+
+    -- 定数
+    local TONE_INDEX = 1
+    local WAIT_INDEX = 2
+
+    -- PCで実行されている場合
+    if !IsRunYamahaRTX() then
+        return --類似する処理は難しいのでスキップ
+    end
+
+
+    -- Yamahaルータで実行されている場合
+    bz, err = rt.hw.open("buzzer1")
+
+    -- 音色を流す
+    -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
+    if (bz) then
+        for i = 1, #score do
+
+            -- 無音の場合
+            if score[i][TONE_INDEX] == "NO" then
+                bz:off()
+            else
+            -- 音色を流す場合
+                bz:tone(score[i][TONE_INDEX])
+            end
+
+            MiliWait(score[i][WAIT_INDEX])
+        end
+
+        bz:off()
+        bz:close()
+    end 
+end
+
+-- ヤマハRTXでキーボード(PC)に応じた音を鳴らす処理
+-- つまり、実質的にヤマハピアノ
+-- 引数 : 楽譜データ(多重配列)
 function PlayYamahaPiano( score )
 
     -- 定数
     local TONE_INDEX = 1
     local WAIT_INDEX = 2
 
-    if IsRunYamahaRTX() then
-            -- Yamahaルータで実行されている場合
-            bz, err = rt.hw.open("buzzer1")
-
-            -- 音色を流す
-            -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
-            if (bz) then
-                for i = 1, #score do
-
-                    -- 無音の場合
-                    if score[i][TONE_INDEX] == "NO" then
-                        bz:off()
-                    else
-                    -- 音色を流す場合
-                        bz:tone(score[i][TONE_INDEX])
-                    end
-
-                    MiliWait(score[i][WAIT_INDEX])
-                end
-    
-                bz:off()
-                bz:close()
-            end 
-    else
-        -- PCで実行されている場合
+    -- PCで実行されている場合
+    if !IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
+
+    -- Yamahaルータで実行されている場合
+    bz, err = rt.hw.open("buzzer1")
+
+    -- 音色を流す
+    -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
+    if (bz) then
+        for i = 1, #score do
+
+            -- 無音の場合
+            if score[i][TONE_INDEX] == "NO" then
+                bz:off()
+            else
+            -- 音色を流す場合
+                bz:tone(score[i][TONE_INDEX])
+            end
+
+            MiliWait(score[i][WAIT_INDEX])
+        end
+
+        bz:off()
+        bz:close()
+    end 
 end
 
 -- ヤマハRTXでLEDを光らせます
@@ -154,32 +193,33 @@ function ControlLED( ledData )
     local LED_ONOFF_INDEX = 1
     local WAIT_INDEX = 2
 
-    if IsRunYamahaRTX() then
-            -- Yamahaルータで実行されている場合
-            bz, err = rt.hw.open("status-led1")
-
-            -- 音色を流す
-            -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
-            if (bz) then
-                for i = 1, #ledData do
-
-                    -- 無音の場合
-                    if ledData[i][LED_ONOFF_INDEX] == "ON" then
-                        bz:on()
-                    else
-                        bz:off()
-                    end
-
-                    rt.sleep(ledData[i][WAIT_INDEX])
-                end
-    
-                bz:off()
-                bz:close()
-            end 
-    else
-        -- PCで実行されている場合
+    -- PCで実行されている場合
+    if !IsRunYamahaRTX() then
         return --類似する処理は難しいのでスキップ
     end
+
+
+    -- Yamahaルータで実行されている場合
+    bz, err = rt.hw.open("status-led1")
+
+    -- 音色を流す
+    -- RTXでは次の音色だけ出せる B2、E3、B3、B4、NO
+    if (bz) then
+        for i = 1, #ledData do
+
+            -- 無音の場合
+            if ledData[i][LED_ONOFF_INDEX] == "ON" then
+                bz:on()
+            else
+                bz:off()
+            end
+
+            rt.sleep(ledData[i][WAIT_INDEX])
+        end
+
+        bz:off()
+        bz:close()
+    end 
 end
 
 -- 実行環境に応じて、Openにするファイルを変更します

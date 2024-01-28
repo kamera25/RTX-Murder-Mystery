@@ -44,7 +44,7 @@ local function validArgs()
 
     print(playerName .. " へ")
     PrintWithWaitTime(message1, 1)
-    PlayYamahaPiano(score)
+    PlayScoreByBuzzer(score)
     print(" ")
     print(" ")
     PrintWithWaitTime(message2, 1)
