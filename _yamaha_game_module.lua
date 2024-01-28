@@ -153,7 +153,7 @@ function PlayYamahaPiano(seconds)
     local TONE_INDEX = 1
     local WAIT_INDEX = 2
 
-    local loopMax = seconds * 2
+    local loopMax = seconds * 5
 
     -- PCで実行されている場合
     if not IsRunYamahaRTX() then
@@ -161,47 +161,57 @@ function PlayYamahaPiano(seconds)
     end
 
     -- 以下、Yamahaルータで実行されている場合の処理
+    -- キーボードを利用する処理
     local kbd, errkbb = rt.hw.open("keyboard1", "jp")
-    print(kbd)
 
-    -- 以下、ハードウェアが取得できなかったときの処理
+
+    -- 以下、キーボードのハンドラーが取得できなかったときの処理
     if kbd == nil then
         -- TODO : あとで直す
         local message = [[
 ジュンビ ヲ シテクダサイ
 ワタシ ハ カレ ニ ハナムケ シタイノデス
-
-            ]]
+        ]]
         exceptionMsg(message)
-        print(errkbb)
     end
 
-    local score = {
-    }
-    --
+    -- 以下、ブザーが取得できなかったときの処理
+    -- ブザーを利用する処理
+    local bz, err = rt.hw.open("buzzer1")
+    if bz == nil then
+        
+        kbd:close()       
+        -- TODO : あとで直す
+        local message = [[
+オト ヲ ナラス ブヒン ガ コワレタ
+サイキドウ ヲ ネガイ
+        ]]
+        exceptionMsg(message)
+    end
+
+
     for i = 1, loopMax do
         -- キーボードの入力情報を取得する(現在のキー入力を取得する)
-        local keyInput = kbd:getc(false)
+        local keyInput = kbd:getc(true)
 
-        local newRow
         if keyInput == "4" then        -- 低いシ
-            newRow = { "B2", 500}
+            bz:tone("B2")            
         elseif keyInput == "5" then    -- ミ
-            newRow = { "E3", 500}
+            bz:tone("E3")
         elseif keyInput == "6" then    -- シ
-            newRow = { "B3", 500}
+            bz:tone("B3")
         elseif keyInput == "+" then    -- 更に高いシ
-            newRow = { "B4", 500}
+            bz:tone("B4")
         else                            --判定外の
-            newRow = { "NO", 500}
+            bz:off()
         end
 
-        table.insert( score, newRow)
+        MiliWait(200)
      end
 
-    kbd:close()
 
-    return score
+    kbd:close()
+    bz:close()
 end
 
 -- ヤマハRTXでLEDを光らせます
