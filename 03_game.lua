@@ -63,7 +63,7 @@ local function invalidArgs()
 まだ鍵を見つけてない もしくは間違っているようだ。
 
 次に進めないのなら さっきの ダイニングメッセージ と レクイレム を聞いたらどうだ。
-> lua usb1:/02_init_game.lua <あなたの名前>
+> lua usb1:/02_game.lua <さっき入力した数>
 
 ]]
 

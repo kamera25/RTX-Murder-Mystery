@@ -58,6 +58,7 @@ end
 
 -- Configに書き込みを行います
 -- PCで実行されている場合、同じファイル配下のテキストに書き込みます
+-- 引数 : str Configに書き込みを行う文字列。つまりヤマハルータのコマンド名
 function WriteConfig( str )
 
     if IsRunYamahaRTX() then
@@ -80,6 +81,7 @@ function WriteConfig( str )
 end
 
 -- Playerの名前を設定します
+-- 引数 : プレイヤーの名前(playerName)
 function SetPlayerName( playerName )
 
     local f = OpenFile('gameSetting.txt', 'w')
