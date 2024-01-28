@@ -46,7 +46,7 @@ Configを見直せ…ヤマハルータの中に秘められた鍵を見つけ�
 
 急げ…残された時間はもうわずかだ…
 
-三島より
+ミシマ より
 
 ]]
 
@@ -64,7 +64,7 @@ local function registerPlayerName()
     local username = arg[1]
 
     ------------
-    -- ストーリー表示後の処理
+    -- ストーリーに関する処理
     ------------
     WriteConfig( [[description 100 "RUN < lua usb1:/02_game.lua 34076 >"]] )
     SetPlayerName(username)
@@ -78,12 +78,11 @@ local function registerPlayerName()
 
 end
 
-function main()
+local function main()
     if #arg < 1 then
         requireInputName()
         return
     else
-        registerPlayerName()
         local success, errorMessage = pcall(registerPlayerName)
 
         if not success then
